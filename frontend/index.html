@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestão de Colaboradores</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body class="bg-light">
+
+<div class="container mt-4">
+
+  <h1 class="mb-4">Gestão de Colaboradores</h1>
+
+  <!-- BOTÃO CARREGAR -->
+  <button class="btn btn-primary mb-3" onclick="carregarColaboradores()">
+    Carregar colaboradores
+  </button>
+
+  <!-- TABELA -->
+  <table class="table table-striped">
+    <thead class="table-dark">
+      <tr>
+        <th>Nome</th>
+        <th>Cargo</th>
+        <th>Empresa</th>
+        <th>Salário</th>
+        <th>Status</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody id="tabela-colaboradores"></tbody>
+  </table>
+
+</div>
+
+<!-- MODAL EDIÇÃO -->
+<div class="modal fade" id="modalEdicao" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Editar colaborador</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <input type="hidden" id="editId">
+
+        <input class="form-control mb-2" id="editNome" placeholder="Nome">
+        <input class="form-control mb-2" id="editCargo" placeholder="Cargo">
+        <input class="form-control mb-2" id="editEmpresa" placeholder="Empresa">
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-success" onclick="salvarEdicao()">Salvar</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
