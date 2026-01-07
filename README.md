@@ -22,7 +22,7 @@ A aplicação consiste em uma API REST para gerenciamento de colaboradores e um 
 
 ## Como rodar o backend?
 
-1) cd Teste_Desenvolvimento
+1) cd Teste_DesenvolvimentoWEB
 2) cd backend
 3) pip install -r requirements.txt
 4) python app.py
