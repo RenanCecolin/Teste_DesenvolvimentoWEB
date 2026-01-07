@@ -3,30 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <title>Gestão de Colaboradores</title>
-
-  <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
 </head>
-<body class="bg-light">
 
+<body class="bg-light">
 <div class="container mt-4">
 
-  <h1 class="mb-4">Gestão de Colaboradores</h1>
+  <h1 class="mb-3">Gestão de Colaboradores</h1>
 
-  <!-- BOTÃO CARREGAR -->
   <button class="btn btn-primary mb-3" onclick="carregarColaboradores()">
     Carregar colaboradores
   </button>
 
   <!-- TABELA -->
-  <table class="table table-striped">
+  <table class="table table-bordered table-striped">
     <thead class="table-dark">
       <tr>
         <th>Nome</th>
+        <th>RE</th>
         <th>Cargo</th>
         <th>Empresa</th>
-        <th>Salário</th>
+        <th>Salário Atual</th>
+        <th>Salário Anterior</th>
         <th>Status</th>
         <th>Ações</th>
       </tr>
@@ -34,10 +32,31 @@
     <tbody id="tabela-colaboradores"></tbody>
   </table>
 
+  <hr>
+
+  <!-- CADASTRO -->
+  <h4>Cadastrar colaborador</h4>
+  <input class="form-control mb-2" id="nome" placeholder="Nome completo">
+  <input class="form-control mb-2" id="re" placeholder="RE">
+  <input class="form-control mb-2" id="cargo" placeholder="Cargo">
+  <input class="form-control mb-2" id="empresa" placeholder="Empresa">
+  <input class="form-control mb-2" id="salario" type="number" placeholder="Salário atual">
+
+  <button class="btn btn-success" onclick="cadastrarColaborador()">Cadastrar</button>
+
+  <hr>
+
+  <!-- REAJUSTE -->
+  <h4>Reajuste salarial</h4>
+  <input class="form-control mb-2" id="idReajuste" placeholder="ID do colaborador">
+  <input class="form-control mb-2" id="percentual" placeholder="Percentual (%)">
+  <input class="form-control mb-2" id="bonus" placeholder="Bônus (opcional)">
+  <button class="btn btn-warning" onclick="reajustarSalario()">Aplicar reajuste</button>
+
 </div>
 
-<!-- MODAL EDIÇÃO -->
-<div class="modal fade" id="modalEdicao" tabindex="-1">
+<!-- MODAL EDITAR COLABORADOR -->
+<div class="modal fade" id="modalEditar" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
 
@@ -49,21 +68,46 @@
       <div class="modal-body">
         <input type="hidden" id="editId">
 
-        <input class="form-control mb-2" id="editNome" placeholder="Nome">
-        <input class="form-control mb-2" id="editCargo" placeholder="Cargo">
-        <input class="form-control mb-2" id="editEmpresa" placeholder="Empresa">
+        <div class="mb-2">
+          <label>Nome completo</label>
+          <input id="editNome" class="form-control">
+        </div>
+
+        <div class="mb-2">
+          <label>RE</label>
+          <input id="editRe" class="form-control">
+        </div>
+
+        <div class="mb-2">
+          <label>Cargo</label>
+          <input id="editCargo" class="form-control">
+        </div>
+
+        <div class="mb-2">
+          <label>Empresa</label>
+          <input id="editEmpresa" class="form-control">
+        </div>
+
+        <div class="mb-2">
+          <label>Salário atual</label>
+          <input id="editSalario" type="number" class="form-control">
+        </div>
       </div>
 
       <div class="modal-footer">
-        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button class="btn btn-success" onclick="salvarEdicao()">Salvar</button>
+        <button class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+        <button class="btn btn-success" onclick="salvarEdicao()">
+          Salvar alterações
+        </button>
       </div>
 
     </div>
   </div>
 </div>
 
-<script src="script.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="script.js"></script>
 </body>
 </html>

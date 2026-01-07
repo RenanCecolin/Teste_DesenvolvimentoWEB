@@ -1,19 +1,39 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 from db import get_connection
 from decimal import Decimal
 
 app = Flask(__name__)
+CORS(app)
 
 # Listar colaboradores
 @app.route("/colaboradores", methods=["GET"])
 def listar_colaboradores():
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
+
     cursor.execute("SELECT * FROM colaboradores")
     colaboradores = cursor.fetchall()
+
     cursor.close()
     conn.close()
-    return jsonify(colaboradores)
+
+    resultado = []
+
+    for c in colaboradores:
+        resultado.append({
+            "id": c["id"],
+            "nome_completo": c["nome_completo"],
+            "re": c["re"],
+            "cargo": c["cargo"],
+            "empresa": c["empresa"],
+            "salario_atual": str(c["salario_atual"]),
+            "salario_anterior": str(c["salario_anterior"]) if c["salario_anterior"] else None,
+            "ativo": c["status"] == "ATIVO"
+        })
+
+    return jsonify(resultado)
+
 
 # Cadastrar novos colaboradores
 @app.route("/colaboradores", methods=["POST"])
@@ -58,7 +78,9 @@ def editar_colaborador(id):
         UPDATE colaboradores
         SET nome_completo = %s,
             cargo = %s,
-            empresa = %s
+            empresa = %s,
+            re = %s,
+            salario_atual = %s
         WHERE id = %s
     """
 
@@ -66,6 +88,8 @@ def editar_colaborador(id):
         dados["nome_completo"],
         dados["cargo"],
         dados["empresa"],
+        dados["re"],
+        dados["salario_atual"],
         id
     ))
 
@@ -77,25 +101,33 @@ def editar_colaborador(id):
 
 
 # Inativar colaboradores
-@app.route("/colaboradores/<int:id>/inativar", methods=["PUT"])
-def inativar_colaborador(id):
+@app.route("/colaboradores/<int:id>/status", methods=["PUT"])
+def alterar_status(id):
     conn = get_connection()
-    cursor = conn.cursor()
+    cursor = conn.cursor(dictionary=True)
 
-    sql = """
+    cursor.execute("SELECT status FROM colaboradores WHERE id = %s", (id,))
+    colaborador = cursor.fetchone()
+
+    if not colaborador:
+        return jsonify({"erro": "Colaborador não encontrado"}), 404
+
+    novo_status = "INATIVO" if colaborador["status"] == "ATIVO" else "ATIVO"
+    data_desativacao = "CURDATE()" if novo_status == "INATIVO" else "NULL"
+
+    cursor.execute(
+        f"""
         UPDATE colaboradores
-        SET status = 'INATIVO',
-            data_desativacao = CURDATE()
+        SET status = %s,
+            data_desativacao = {data_desativacao}
         WHERE id = %s
-    """
+        """,
+        (novo_status, id)
+    )
 
-    cursor.execute(sql, (id,))
     conn.commit()
+    return jsonify({"mensagem": "Status atualizado"})
 
-    cursor.close()
-    conn.close()
-
-    return jsonify({"mensagem": "Colaborador inativado com sucesso"})
 
 
 # Reajuste salarial (+ bonus) dos colaboradores
@@ -125,6 +157,10 @@ def reajuste_salarial(id):
 
     if salario_atual < Decimal(1500):
         novo_salario += bonus
+    elif bonus > 0:
+        return jsonify({
+            "erro": "Bônus só pode ser aplicado para salários abaixo de 1500"
+        }), 400
 
     cursor.execute("""
         UPDATE colaboradores

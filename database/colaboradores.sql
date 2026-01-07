@@ -28,4 +28,4 @@ VALUES
 
 -- (Listar) SELECT * FROM colaboradores;
 -- (Cadastrar) SELECT * FROM colaboradores WHERE re = 'RE999';
-select * from colaboradores;
+SELECT * FROM colaboradores;
